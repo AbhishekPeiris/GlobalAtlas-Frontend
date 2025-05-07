@@ -5,7 +5,7 @@ import { Logo } from "../assets";
 import StarGlowEffect from "../components/StarGlowEffect";
 
 export default function ForgotPassword() {
-  const { resetPassword } = useAuth();
+  const { requestPasswordReset } = useAuth();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
@@ -29,8 +29,8 @@ export default function ForgotPassword() {
       setIsLoading(true);
       setError("");
       setMessage("");
-
-      await resetPassword(email);
+      // Update the function call
+      await requestPasswordReset(email);
       setMessage("Password reset link has been sent to your email");
     } catch (err) {
       setError(err.message || "Failed to send reset link. Please try again.");

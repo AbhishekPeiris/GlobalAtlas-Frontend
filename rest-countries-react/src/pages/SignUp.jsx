@@ -54,8 +54,8 @@ export default function Signup() {
       return;
     }
 
-    if (formData.password.length < 8) {
-      setError("Password must be at least 8 characters long");
+    if (formData.password.length < 6) {
+      setError("Password must be at least 6 characters long");
       return;
     }
 
@@ -307,7 +307,7 @@ export default function Signup() {
                     </div>
                   </div>
                   <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                    Password must be at least 8 characters
+                    Password must be at least 6 characters
                   </p>
                 </div>
 

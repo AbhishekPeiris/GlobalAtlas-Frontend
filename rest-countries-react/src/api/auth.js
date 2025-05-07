@@ -46,3 +46,50 @@ export const signIn = async (email, password) => {
     throw new Error(error.response ? error.response.data.msg : "Login failed");
   }
 };
+
+// Add these functions to api/auth.js
+export const forgotPassword = async (email) => {
+  try {
+    const response = await axios.post(
+      `${API_URL}/auth/forgot-password`,
+      { email },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Forgot password error:",
+      error.response ? error.response.data : error.message
+    );
+    throw new Error(
+      error.response ? error.response.data.msg : "Failed to send reset email"
+    );
+  }
+};
+
+export const resetPassword = async (token, password) => {
+  try {
+    const response = await axios.put(
+      `${API_URL}/auth/reset-password/${token}`,
+      { password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Reset password error:",
+      error.response ? error.response.data : error.message
+    );
+    throw new Error(
+      error.response ? error.response.data.msg : "Failed to reset password"
+    );
+  }
+};

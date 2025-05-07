@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import StarGlowEffect from "../components/StarGlowEffect";
 import { getUserFavorites, removeFromFavorites } from "../api/fav";
-import { updateUserProfile, deleteUserAccount } from "../api/user";
+import { updateUserProfile, deleteUserAccount, getUserById } from "../api/user";
 import { toast } from "react-hot-toast";
 
 export default function Profile() {
@@ -25,6 +25,8 @@ export default function Profile() {
         month: "long",
       })
     : ""; // Fallback
+  
+  const [createdDate, setCreatedDate] = useState(null)
 
   // Mock favorite countries (in a real app, this would come from the user object or API)
   const [favoriteCountries, setFavoriteCountries] = useState([]);
@@ -76,6 +78,41 @@ export default function Profile() {
 
     fetchFavorites();
   }, [user]);
+
+  useEffect(() => {
+    const getUserDetailsById = async () => {
+      if (!user) return;
+      try {
+        const userDetails = await getUserById(user.id);
+        setUserData((prev) => ({
+          ...prev,
+          name: userDetails.name,
+          email: userDetails.email,
+          bio: userDetails.bio,
+          location: userDetails.location,
+          website: userDetails.website,
+          favoriteCountries: userDetails.favoriteCountries,
+        }));
+        console.log("USER", userDetails)
+
+        // If you want to use joinDate, store it somewhere like in state or userData
+        const joinDate = userDetails?.createdAt
+          ? new Date(userDetails.createdAt).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+          })
+          : "";
+        setCreatedDate(joinDate)
+
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+        setError("Failed to load your profile data.");
+      }
+    };
+
+    getUserDetailsById();
+  }, []);
+
 
   // Handle removing a country from favorites
   const handleRemoveFavorite = async (favoriteId) => {
@@ -318,7 +355,7 @@ export default function Profile() {
                       <path d="M12 18h.01"></path>
                       <path d="M16 18h.01"></path>
                     </svg>
-                    {joinDate}
+                    {createdDate || joinDate}
                   </div>
 
                   {userData.website && (
