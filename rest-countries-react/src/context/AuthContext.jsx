@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { signIn, signUp } from "../api/auth";
+import { signIn, signUp, forgotPassword, resetPassword } from "../api/auth";
 
 // Create the AuthContext
 const AuthContext = createContext(null);
@@ -51,6 +51,27 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const requestPasswordReset = async (email) => {
+    try {
+      const data = await forgotPassword(email);
+      return data;
+    } catch (error) {
+      console.error("Error requesting password reset:", error);
+      throw error;
+    }
+  };
+
+  // Add the reset password function
+  const confirmPasswordReset = async (token, newPassword) => {
+    try {
+      const data = await resetPassword(token, newPassword);
+      return data;
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      throw error;
+    }
+  };
+
   // Logout function
   const logout = () => {
     setUser(null);
@@ -62,7 +83,17 @@ export function AuthProvider({ children }) {
 
   // Context provider that shares the user state and methods
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, signup }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        login,
+        logout,
+        signup,
+        requestPasswordReset,
+        confirmPasswordReset,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
